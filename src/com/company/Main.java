@@ -1,14 +1,9 @@
 package com.company;
 
-import com.sun.org.apache.xpath.internal.axes.IteratorPool;
 import com.sun.org.apache.xpath.internal.operations.Or;
 
 import java.io.*;
 import java.util.*;
-import java.util.Scanner;
-import java.util.HashSet;
-import java.util.InputMismatchException;
-
 
 public class Main {
 
@@ -118,10 +113,10 @@ public class Main {
     }
 
 
-    public static Tree BuildTree(HashSet<Organization> orgs, HashSet<User> users) {
+    public static OrgCollection BuildTree(HashSet<Organization> orgs, HashSet<User> users) {
         // root node of tree has null orgData.  it exists only to hold real org elements
         // as children
-        Tree tree = new Tree(null);
+        OrgCollection tree = new OrgCollection(null);
         boolean workRemains = true;
         while (workRemains) {
             workRemains = false;
@@ -129,7 +124,7 @@ public class Main {
                 Organization org = orgIt.next();
                 // if parentId is valid
                 if (org.hasParent) {
-                    Node parent = tree.NodeExists(org.parentId);
+                    Org parent = tree.NodeExists(org.parentId);
                     if (parent != null) {
                         // add to tree as child of parent
                         tree.AddChild(parent, org);
@@ -152,7 +147,8 @@ public class Main {
     public static void main(String[] args) {
         // write your code here
         try {
-            Tree orgChart;
+            OrgCollection orgChart;
+            List<Org> orgList;
             HashSet<Organization> orgs;
             HashSet<User> users;
             System.out.println("Hello World!");
@@ -160,6 +156,8 @@ public class Main {
             users = ReadUserData("C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\users.txt");
             orgChart = BuildTree(orgs, users);
             orgChart.FlattenToAscii(orgChart.root, "");
+            orgList = orgChart.getOrgTree(1, true);
+            System.out.println(String.format("orgList length %d", orgList.size()));
         } catch (Exception exc) {
             // TODO
         }
