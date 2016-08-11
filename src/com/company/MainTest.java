@@ -56,7 +56,7 @@ public class MainTest {
         // larger input file test
         users = Main.ReadUserData("C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\moreusers.txt");
         Assert.assertNotNull(users);
-        Assert.assertEquals(20, users.size());
+        Assert.assertEquals(30, users.size());
         orgs = Main.ReadOrgData("C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\moreorgs.txt");
         Assert.assertNotNull(orgs);
         Assert.assertEquals(20, orgs.size());
