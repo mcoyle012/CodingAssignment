@@ -127,6 +127,7 @@ public class Main {
         // tests are in place, then refactor for performance.
         boolean workRemains = true;
         while (workRemains) {
+            boolean workDone = false;
             workRemains = false;
             for (Iterator<Organization> orgIt = orgs.iterator(); orgIt.hasNext(); ) {
                 Organization org = orgIt.next();
@@ -138,6 +139,7 @@ public class Main {
                         tree.AddChild(parent, org);
                         // remove from HashSet
                         orgIt.remove();
+                        workDone = true;
                     } else {
                         workRemains = true;
                     }
@@ -147,6 +149,13 @@ public class Main {
                     // remove from HashSet
                     orgIt.remove();
                 }
+            }
+            // if I added no nodes to the tree, then the input isn't a tree
+            // there should be at least one node to add to the tree in every pass
+            // unless there are orphaned nodes, which will never get added
+            if (workRemains && !workDone) {
+                System.out.println("Input org tree is badly formed.  Ignoring orphaned orgs in input file.");
+                break;
             }
         }
 
@@ -164,23 +173,48 @@ public class Main {
         return tree;
     }
 
+    /*
+      Program entry point.  Optional user supplied arguments indicate the
+      intput files to process.  arg1 = org, arg2 = user.
+     */
     public static void main(String[] args) {
-        // write your code here
+
         try {
+            String orgFilename = null;
+            String userFilename = null;
+            int argc = 0;
+
+            // use user supplied filenames, if present
+            for (String s : args) {
+                if (argc == 0) {
+                    orgFilename = args[argc++];
+                } else if (argc == 1) {
+                    userFilename = args[argc++];
+                    break;
+                }
+            }
+            if (args.length != 0 && argc != 2) {
+                System.out.println(String.format("Expected two command line arguments, got %d", argc));
+            } else {
+                orgFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\orgs2.txt";
+                // orgFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\orgs.txt";
+                userFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\users.txt";
+            }
+
             OrgCollection orgChart;
             List<Org> orgList;
             HashSet<Organization> orgs;
             HashSet<User> users;
-            System.out.println("Hello World!");
-            orgs = ReadOrgData("C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\orgs.txt");
-            users = ReadUserData("C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\users.txt");
+
+            orgs = ReadOrgData(orgFilename);
+            users = ReadUserData(userFilename);
             orgChart = BuildTree(orgs, users);
             System.out.println("Depth First Flattened Tree");
             orgChart.FlattenToAscii(orgChart.root, "");
             orgList = orgChart.getOrgTree(1, true);
             System.out.println(String.format("orgList length %d", orgList.size()));
         } catch (Exception exc) {
-            // TODO
+            System.out.println(String.format("Program aborting due to exception %s", exc.toString()));
         }
     }
 }
