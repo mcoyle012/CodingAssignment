@@ -13,7 +13,11 @@ public class Main {
 
     private static String delimiter = "\\s*,\\s*|\r\n|\t";
 
-    private static HashSet<Organization> ReadOrgData(String filename) {
+    public static String orgFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\orgs.txt";
+    public static String userFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\users.txt";
+    public static String outFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\output.txt";
+
+    public static HashSet<Organization> ReadOrgData(String filename) {
         HashSet<Organization> orgs = null;
         int lineNum = 1;
 
@@ -23,7 +27,6 @@ public class Main {
                 Organization org = new Organization();
                 try {
                     org.Id = s.nextInt();
-                    System.out.println(String.format("org.Id = %d", org.Id));
                 } catch (InputMismatchException e) {
                     System.out.println(String.format("Ignoring line %d in %s due to parse error in first field", lineNum, filename));
                     s.nextLine();
@@ -33,16 +36,13 @@ public class Main {
                 try {
                     org.parentId = s.nextInt();
                     org.hasParent = true;
-                    System.out.println(String.format("org.parentId = %d", org.parentId));
                 } catch (InputMismatchException e) {
                     org.hasParent = false;
-                    System.out.println(String.format("org.parentId = null"));
                     s.next();
                 }
                 try {
                     assert (s.hasNext());
                     org.name = s.next();
-                    System.out.println(String.format("org.name = %s", org.name));
                 } catch (InputMismatchException e) {
                     System.out.println(String.format("Ignoring line %d in %s due to parse error in third field", lineNum, filename));
                     s.nextLine();
@@ -117,6 +117,11 @@ public class Main {
     }
 
 
+    /*
+     Given an unordered list of orgs and users, construct an OrgCollection that represents
+     that org.
+     TODO: Should be refactored as a constructor method on OrgCollection.
+     */
     public static OrgCollection BuildTree(HashSet<Organization> orgs, HashSet<User> users) {
         // root node of tree has null orgData.  it exists only to hold real org elements
         // as children, not any org data itself
@@ -159,7 +164,7 @@ public class Main {
             }
         }
 
-        // Add user data to each org
+        // Accumulate user data to corresponding org
         for (Iterator<User> userIt = users.iterator(); userIt.hasNext(); ) {
             User user = userIt.next();
             Org parent = tree.NodeExists(user.Org);
@@ -182,23 +187,22 @@ public class Main {
         try {
             String orgFilename = null;
             String userFilename = null;
+            String outFilename = null;
             int argc = 0;
 
             // use user supplied filenames, if present
             for (String s : args) {
-                if (argc == 0) {
-                    orgFilename = args[argc++];
-                } else if (argc == 1) {
-                    userFilename = args[argc++];
+                if (argc++ == 0) {
+                    orgFilename = s;
+                } else if (argc++ == 1) {
+                    userFilename = s;
+                } else if (argc++ == 2) {
+                    outFilename = s;
                     break;
                 }
             }
-            if (args.length != 0 && argc != 2) {
-                System.out.println(String.format("Expected two command line arguments, got %d", argc));
-            } else {
-                orgFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\orgs2.txt";
-                // orgFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\orgs.txt";
-                userFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\users.txt";
+            if (args.length != 0 && argc != 3) {
+                System.out.println(String.format("Expected three command line arguments (orgFile, userFile, outputFile), but got %d.  Reverting to default filenames.", argc));
             }
 
             OrgCollection orgChart;
@@ -206,13 +210,15 @@ public class Main {
             HashSet<Organization> orgs;
             HashSet<User> users;
 
+            // read org file data
             orgs = ReadOrgData(orgFilename);
+            // read user file data
             users = ReadUserData(userFilename);
+            // consturct tree of orgs and add users to each org
             orgChart = BuildTree(orgs, users);
-            System.out.println("Depth First Flattened Tree");
-            orgChart.FlattenToAscii(orgChart.root, "");
-            orgList = orgChart.getOrgTree(1, true);
-            System.out.println(String.format("orgList length %d", orgList.size()));
+
+            // dump org tree to file with usage stats
+            orgChart.FlattenToAscii(orgChart.root, "", new PrintWriter(new FileWriter(outFilename)));
         } catch (Exception exc) {
             System.out.println(String.format("Program aborting due to exception %s", exc.toString()));
         }

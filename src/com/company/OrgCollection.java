@@ -33,17 +33,17 @@ public class OrgCollection {
         orgHashMap.put(data.Id, child);
     }
 
-    public void FlattenToAscii(Org node, String prefix) {
+    public void FlattenToAscii(Org node, String prefix, PrintWriter out) {
         // root node is a placeholder (non-org) entity.  Only dump its children
         // which are real orgs
         if (node.orgData != null) {
-            System.out.println(String.format("%s +- %d, %d, %d, %d", prefix, node.orgData.Id, node.getTotalNumUsers(), node.getTotalNumFiles(), node.getTotalNumBytes()));
+            out.println(String.format("%s +- %d, %d, %d, %d", prefix, node.orgData.Id, node.getTotalNumUsers(), node.getTotalNumFiles(), node.getTotalNumBytes()));
             prefix += "  ";
         }
 
         for (Iterator<Org> children = node.children.iterator(); children.hasNext(); ) {
             Org child = children.next();
-            FlattenToAscii(child, prefix);
+            FlattenToAscii(child, prefix, out);
         }
     }
 
