@@ -9,9 +9,9 @@ import java.util.*;
  * in order to generate data structures needed by the Org and OrgCollection
  * classess called out in the assignment.
  */
-public class Main {
+class Main {
 
-    private static String delimiter = "\\s*,\\s*|\r\n|\t";
+    private static final String delimiter = "\\s*,\\s*|\r\n|\t";
 
     public static String orgFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\orgs.txt";
     public static String userFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\users.txt";
@@ -185,9 +185,6 @@ public class Main {
     public static void main(String[] args) {
 
         try {
-            String orgFilename = null;
-            String userFilename = null;
-            String outFilename = null;
             int argc = 0;
 
             // use user supplied filenames, if present
@@ -218,7 +215,10 @@ public class Main {
             orgChart = BuildTree(orgs, users);
 
             // dump org tree to file with usage stats
-            orgChart.FlattenToAscii(orgChart.root, "", new PrintWriter(new FileWriter(outFilename)));
+            PrintWriter pw = new PrintWriter(new FileWriter(outFilename));
+            orgChart.FlattenToAscii(orgChart.root, "", pw);
+            pw.close();
+
         } catch (Exception exc) {
             System.out.println(String.format("Program aborting due to exception %s", exc.toString()));
         }

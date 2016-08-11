@@ -76,7 +76,7 @@ public class OrgCollection {
     }
 
 
-    public List<Org> FlattenToArray(Org node, List<Org> array, boolean inclusive) {
+    private List<Org> FlattenToArray(Org node, List<Org> array, boolean inclusive) {
         if (node != root && inclusive) {
             array.add(node);
         }

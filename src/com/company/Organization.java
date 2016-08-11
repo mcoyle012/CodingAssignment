@@ -8,7 +8,7 @@ import java.util.*;
  * users assigned to this organization that resulted from processing the
  * user input file.
  */
-public class Organization {
+class Organization {
     int Id;
     int parentId;
     String name;
