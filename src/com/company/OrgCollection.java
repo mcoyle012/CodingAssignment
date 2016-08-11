@@ -1,8 +1,6 @@
 package com.company;
 
-import com.sun.org.apache.xpath.internal.operations.Or;
-
-
+import java.io.*;
 import java.util.*;
 
 /**
@@ -31,6 +29,7 @@ public class OrgCollection {
     public void AddChild(Org parent, Organization data) {
         Org child = new Org(data);
         parent.children.add(child);
+        child.parent = parent;
         orgHashMap.put(data.Id, child);
     }
 
@@ -38,7 +37,7 @@ public class OrgCollection {
         // root node is a placeholder (non-org) entity.  Only dump its children
         // which are real orgs
         if (node.orgData != null) {
-            System.out.println(String.format("%s +- %s", prefix, node.orgData.name));
+            System.out.println(String.format("%s +- %d, %d, %d, %d", prefix, node.orgData.Id, node.getTotalNumUsers(), node.getTotalNumFiles(), node.getTotalNumBytes()));
             prefix += "  ";
         }
 
@@ -58,7 +57,26 @@ public class OrgCollection {
         return orgList;
     }
 
-    private List<Org> FlattenToArray(Org node, List<Org> array, boolean inclusive) {
+    /*
+       Do this once for the whole tree
+     */
+    public void setOrgTreeStats(Org node) {
+        Iterator<Org> children = node.children.iterator();
+
+        // will terminate when we hit leaf nodes
+        while (children.hasNext()) {
+            Org child = children.next();
+            setOrgTreeStats(child);
+        }
+        if (node.parent != null && node != null) {
+            node.parent.descendentsNumBytes += node.orgBytes;
+            node.parent.descendentsNumFiles += node.orgFiles;
+            node.parent.descendentsNumUsers += node.orgData.userList.size();
+        }
+    }
+
+
+    public List<Org> FlattenToArray(Org node, List<Org> array, boolean inclusive) {
         if (node != root && inclusive) {
             array.add(node);
         }

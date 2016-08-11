@@ -1,11 +1,9 @@
 package com.company;
 
-import com.sun.org.apache.xpath.internal.operations.Or;
+import javax.xml.soap.Node;
+import java.util.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
-/*
+/**
  * Represents an organization in the org hierarchy tree, plus its relationship
  * to parent and child
  */
@@ -13,22 +11,39 @@ public class Org {
     Organization orgData;
     Org parent;
     List<Org> children;
+    int orgBytes = 0;
+    int orgFiles = 0;
+    int descendentsNumBytes = 0;
+    int descendentsNumFiles = 0;
+    int descendentsNumUsers = 0;
 
+    // Construct an Org based on parameters read from input file
     public Org(Organization data) {
         orgData = data;
         children = new ArrayList<>();
     }
 
+    /*
+     * Recursively calculate the number of users in this organization
+     * and its children.
+     */
     public int getTotalNumUsers() {
-        return 0;
+        return children.size() + descendentsNumUsers;
     }
 
+    /*
+      Calculate the total number of files in this organization
+     */
     public int getTotalNumFiles() {
-        return 0;
+        return orgFiles + descendentsNumFiles;
     }
 
+    /*
+      Calculate the total number of bytes in this organization
+     */
     public int getTotalNumBytes() {
-        return 0;
+
+        return orgBytes + descendentsNumBytes;
     }
 
     List<Org> getChildOrgs() {

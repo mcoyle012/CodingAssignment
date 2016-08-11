@@ -1,10 +1,14 @@
 package com.company;
 
-import com.sun.org.apache.xpath.internal.operations.Or;
-
 import java.io.*;
 import java.util.*;
 
+/**
+ * Entry point for execution of the homework assignment for Code42
+ * interview.  Contains static methods for file input and output,
+ * in order to generate data structures needed by the Org and OrgCollection
+ * classess called out in the assignment.
+ */
 public class Main {
 
     private static String delimiter = "\\s*,\\s*|\r\n|\t";
@@ -115,8 +119,12 @@ public class Main {
 
     public static OrgCollection BuildTree(HashSet<Organization> orgs, HashSet<User> users) {
         // root node of tree has null orgData.  it exists only to hold real org elements
-        // as children
+        // as children, not any org data itself
         OrgCollection tree = new OrgCollection(null);
+
+        // Pure brute force; more performant ways exist.  Call this the MVP edition.
+        // Revisit this once all the functional requirements are met and some unit
+        // tests are in place, then refactor for performance.
         boolean workRemains = true;
         while (workRemains) {
             workRemains = false;
@@ -141,6 +149,18 @@ public class Main {
                 }
             }
         }
+
+        // Add user data to each org
+        for (Iterator<User> userIt = users.iterator(); userIt.hasNext(); ) {
+            User user = userIt.next();
+            Org parent = tree.NodeExists(user.Org);
+            if (parent != null) {
+                parent.orgData.userList.add(user);
+                parent.orgBytes += user.numBytes;
+                parent.orgFiles += user.numFiles;
+            }
+        }
+        tree.setOrgTreeStats(tree.root);
         return tree;
     }
 
@@ -155,6 +175,7 @@ public class Main {
             orgs = ReadOrgData("C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\orgs.txt");
             users = ReadUserData("C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\users.txt");
             orgChart = BuildTree(orgs, users);
+            System.out.println("Depth First Flattened Tree");
             orgChart.FlattenToAscii(orgChart.root, "");
             orgList = orgChart.getOrgTree(1, true);
             System.out.println(String.format("orgList length %d", orgList.size()));

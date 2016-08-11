@@ -1,7 +1,8 @@
 package com.company;
 
 /**
- * Created by Mike on 8/9/2016.
+ * Contains the attributes of a user as defined by the parameters read
+ * in from the corresponding input file.
  */
 public class User {
     int Id;
