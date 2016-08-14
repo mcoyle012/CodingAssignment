@@ -14,4 +14,21 @@ class Organization {
     String name;
     boolean hasParent;
     List<User> userList = new ArrayList<User>();
+
+    public int getId() {
+        return Id;
+    }
+
+    public int getParentId() {
+        return parentId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean getHasParent() {
+        return hasParent;
+    }
+
 }

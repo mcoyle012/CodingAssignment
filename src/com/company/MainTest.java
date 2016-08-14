@@ -3,8 +3,10 @@ package com.company;
 import org.junit.Assert;
 
 import java.io.FileWriter;
+import java.io.InterruptedIOException;
 import java.io.PrintWriter;
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -19,7 +21,7 @@ public class MainTest {
 
         OrgCollection orgChart;
         List<Org> orgList;
-        HashSet<Organization> orgs;
+        HashMap<Integer, Organization> orgs;
         HashSet<User> users;
         PrintWriter pw;
 

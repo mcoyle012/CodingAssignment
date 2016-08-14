@@ -11,18 +11,18 @@ import java.util.*;
  */
 class Main {
 
-    private static final String delimiter = "\\s*,\\s*|\r\n|\t";
+    private static final String delimiter = "\\s*,\\s*";
 
     public static String orgFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\orgs.txt";
     public static String userFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\users.txt";
     public static String outFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\output.txt";
 
-    public static HashSet<Organization> ReadOrgData(String filename) {
-        HashSet<Organization> orgs = null;
+    public static HashMap<Integer, Organization> ReadOrgData(String filename) {
+        HashMap<Integer, Organization> orgs = null;
         int lineNum = 1;
 
         try (Scanner s = new Scanner(new BufferedReader(new FileReader(filename))).useDelimiter(delimiter)) {
-            orgs = new HashSet<Organization>();
+            orgs = new HashMap<Integer, Organization>();
             while (s.hasNextLine()) {
                 Organization org = new Organization();
                 try {
@@ -49,7 +49,7 @@ class Main {
                     lineNum++;
                     continue;
                 }
-                if (!orgs.add(org)) {
+                if (orgs.put(org.Id, org) != null) {
                     System.out.println(String.format("Organization %d already exists, ignoring duplicate definition on line %d in %s", org.Id, lineNum, filename));
                 }
                 lineNum++;
@@ -122,7 +122,7 @@ class Main {
      that org.
      TODO: Should be refactored as a constructor method on OrgCollection.
      */
-    public static OrgCollection BuildTree(HashSet<Organization> orgs, HashSet<User> users) {
+    public static OrgCollection BuildTree(HashMap<Integer, Organization> orgs, HashSet<User> users) {
         // root node of tree has null orgData.  it exists only to hold real org elements
         // as children, not any org data itself
         OrgCollection tree = new OrgCollection(null);
@@ -134,25 +134,27 @@ class Main {
         while (workRemains) {
             boolean workDone = false;
             workRemains = false;
-            for (Iterator<Organization> orgIt = orgs.iterator(); orgIt.hasNext(); ) {
-                Organization org = orgIt.next();
+
+            // Iterating over values only
+            for (Organization org : orgs.values()) {
                 // if parentId is valid
                 if (org.hasParent) {
                     Org parent = tree.NodeExists(org.parentId);
                     if (parent != null) {
                         // add to tree as child of parent
                         tree.AddChild(parent, org);
-                        // remove from HashSet
-                        orgIt.remove();
+                        // remove from HashMap
+                        orgs.remove(org.Id);
                         workDone = true;
                     } else {
                         workRemains = true;
                     }
                 } else {
+                    workDone = true;
                     // has no parent, is child of dummy root node
                     tree.AddChild(tree.root, org);
                     // remove from HashSet
-                    orgIt.remove();
+                    orgs.remove(org.Id);
                 }
             }
             // if I added no nodes to the tree, then the input isn't a tree
@@ -169,7 +171,7 @@ class Main {
             User user = userIt.next();
             Org parent = tree.NodeExists(user.Org);
             if (parent != null) {
-                parent.orgData.userList.add(user);
+                parent.addUser(user);
                 parent.orgBytes += user.numBytes;
                 parent.orgFiles += user.numFiles;
             }
@@ -187,7 +189,7 @@ class Main {
         try {
             int argc = 0;
 
-            // use user supplied filenames, if present
+            // use user supplied filenames, if present  t
             for (String s : args) {
                 if (argc++ == 0) {
                     orgFilename = s;
@@ -204,7 +206,7 @@ class Main {
 
             OrgCollection orgChart;
             List<Org> orgList;
-            HashSet<Organization> orgs;
+            HashMap<Integer, Organization> orgs;
             HashSet<User> users;
 
             // read org file data

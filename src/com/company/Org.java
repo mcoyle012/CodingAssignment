@@ -1,5 +1,7 @@
 package com.company;
 
+import com.sun.org.apache.xpath.internal.operations.Or;
+
 import javax.xml.soap.Node;
 import java.util.*;
 
@@ -8,9 +10,9 @@ import java.util.*;
  * to parent and child
  */
 public class Org {
-    Organization orgData;
+    private Organization orgData;
     Org parent;
-    List<Org> children;
+    private List<Org> children;
     int orgBytes = 0;
     int orgFiles = 0;
     int descendentsNumBytes = 0;
@@ -46,6 +48,21 @@ public class Org {
         return orgBytes + descendentsNumBytes;
     }
 
+    public void addChild(Org node) {
+        children.add(node);
+    }
+
+    public void addUser(User user) {
+        orgData.userList.add(user);
+    }
+
+    public boolean hasOrgData() {
+        return orgData != null;
+    }
+
+    public Organization getOrgData() {
+        return orgData;
+    }
     List<Org> getChildOrgs() {
         return children;
     }

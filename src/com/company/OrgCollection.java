@@ -28,7 +28,7 @@ public class OrgCollection {
     // add child node
     public void AddChild(Org parent, Organization data) {
         Org child = new Org(data);
-        parent.children.add(child);
+        parent.addChild(child);
         child.parent = parent;
         orgHashMap.put(data.Id, child);
     }
@@ -36,12 +36,14 @@ public class OrgCollection {
     public void FlattenToAscii(Org node, String prefix, PrintWriter out) {
         // root node is a placeholder (non-org) entity.  Only dump its children
         // which are real orgs
-        if (node.orgData != null) {
-            out.println(String.format("%s +- %d, %d, %d, %d", prefix, node.orgData.Id, node.getTotalNumUsers(), node.getTotalNumFiles(), node.getTotalNumBytes()));
+        if (node.hasOrgData()) {
+            Organization orgData = node.getOrgData();
+            out.println(String.format("%s +- %d, %d, %d, %d", prefix, orgData.Id, node.getTotalNumUsers(), node.getTotalNumFiles(), node.getTotalNumBytes()));
             prefix += "  ";
         }
 
-        for (Iterator<Org> children = node.children.iterator(); children.hasNext(); ) {
+
+        for (Iterator<Org> children = node.getChildOrgs().iterator(); children.hasNext(); ) {
             Org child = children.next();
             FlattenToAscii(child, prefix, out);
         }
@@ -61,7 +63,7 @@ public class OrgCollection {
        Do this once for the whole tree
      */
     public void setOrgTreeStats(Org node) {
-        Iterator<Org> children = node.children.iterator();
+        Iterator<Org> children = node.getChildOrgs().iterator();
 
         // will terminate when we hit leaf nodes
         while (children.hasNext()) {
@@ -71,7 +73,7 @@ public class OrgCollection {
         if (node.parent != null && node != null) {
             node.parent.descendentsNumBytes += node.orgBytes;
             node.parent.descendentsNumFiles += node.orgFiles;
-            node.parent.descendentsNumUsers += node.orgData.userList.size();
+            node.parent.descendentsNumUsers += node.getChildOrgs().size();
         }
     }
 
@@ -80,7 +82,7 @@ public class OrgCollection {
         if (node != root && inclusive) {
             array.add(node);
         }
-        for (Iterator<Org> children = node.children.iterator(); children.hasNext(); ) {
+        for (Iterator<Org> children = node.getChildOrgs().iterator(); children.hasNext(); ) {
             Org child = children.next();
             FlattenToArray(child, array, true);
         }
