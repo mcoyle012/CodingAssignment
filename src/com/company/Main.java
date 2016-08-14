@@ -61,11 +61,11 @@ class Main {
     }
 
 
-    public static HashSet<User> ReadUserData(String filename) {
-        HashSet<User> users = null;
+    public static HashMap<Integer, User> ReadUserData(String filename) {
+        HashMap<Integer, User> users = null;
 
         try (Scanner s = new Scanner(new BufferedReader(new FileReader(filename))).useDelimiter(delimiter)) {
-            users = new HashSet<>();
+            users = new HashMap<Integer, User>();
             int lineNum = 1;
 
             while (s.hasNextLine()) {
@@ -104,7 +104,7 @@ class Main {
                     lineNum++;
                     continue;
                 }
-                if (!users.add(user)) {
+                if (users.put(user.Id, user) != null) {
                     System.out.println(String.format("User %d already exists, ignoring duplicate definition on line %d in %s", user.Id, lineNum, filename));
                 }
                 lineNum++;
@@ -122,7 +122,7 @@ class Main {
      that org.
      TODO: Should be refactored as a constructor method on OrgCollection.
      */
-    public static OrgCollection BuildTree(HashMap<Integer, Organization> orgs, HashSet<User> users) {
+    public static OrgCollection BuildTree(HashMap<Integer, Organization> orgs, HashMap<Integer, User> users) {
         // root node of tree has null orgData.  it exists only to hold real org elements
         // as children, not any org data itself
         OrgCollection tree = new OrgCollection(null);
@@ -167,8 +167,7 @@ class Main {
         }
 
         // Accumulate user data to corresponding org
-        for (Iterator<User> userIt = users.iterator(); userIt.hasNext(); ) {
-            User user = userIt.next();
+        for (User user : users.values()) {
             Org parent = tree.NodeExists(user.Org);
             if (parent != null) {
                 parent.addUser(user);
@@ -207,7 +206,7 @@ class Main {
             OrgCollection orgChart;
             List<Org> orgList;
             HashMap<Integer, Organization> orgs;
-            HashSet<User> users;
+            HashMap<Integer, User> users;
 
             // read org file data
             orgs = ReadOrgData(orgFilename);

@@ -22,7 +22,7 @@ public class MainTest {
         OrgCollection orgChart;
         List<Org> orgList;
         HashMap<Integer, Organization> orgs;
-        HashSet<User> users;
+        HashMap<Integer, User> users;
         PrintWriter pw;
 
         // use default input file
