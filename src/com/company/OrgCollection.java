@@ -22,7 +22,7 @@ public class OrgCollection {
      that org.
      TODO: Should be refactored as a constructor method on OrgCollection.
      */
-    public OrgCollection(HashMap<Integer, Organization> orgs, HashMap<Integer, User> users) {
+    public OrgCollection(HashMap<Integer, OrgAttributes> orgs, HashMap<Integer, UserAttributes> users) {
 
         // Pure brute force; more performant ways exist.  Call this the MVP edition.
         // Revisit this once all the functional requirements are met and some unit
@@ -31,7 +31,7 @@ public class OrgCollection {
             boolean workDone = false;
 
             // Iterating over values only
-            for (Organization org : orgs.values()) {
+            for (OrgAttributes org : orgs.values()) {
                 // if parentId is valid
                 if (org.hasParent) {
                     Org parent = NodeExists(org.parentId);
@@ -62,7 +62,7 @@ public class OrgCollection {
         }
 
         // Accumulate user data to corresponding org
-        for (User user : users.values()) {
+        for (UserAttributes user : users.values()) {
             Org parent = NodeExists(user.Org);
             if (parent != null) {
                 parent.addUser(user);
@@ -79,7 +79,7 @@ public class OrgCollection {
     }
 
     // add child node
-    public void AddChild(Org parent, Organization data) {
+    public void AddChild(Org parent, OrgAttributes data) {
         Org child = new Org(data);
         parent.addChild(child);
         child.parent = parent;
@@ -90,7 +90,7 @@ public class OrgCollection {
         // root node is a placeholder (non-org) entity.  Only dump its children
         // which are real orgs
         if (node.hasOrgData()) {
-            Organization orgData = node.getOrgData();
+            OrgAttributes orgData = node.getOrgData();
             out.println(String.format("%s +- %d, %d, %d, %d", prefix, orgData.Id, node.getTotalNumUsers(), node.getTotalNumFiles(), node.getTotalNumBytes()));
             prefix += "  ";
         }

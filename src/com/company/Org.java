@@ -1,8 +1,5 @@
 package com.company;
 
-import com.sun.org.apache.xpath.internal.operations.Or;
-
-import javax.xml.soap.Node;
 import java.util.*;
 
 /**
@@ -10,7 +7,7 @@ import java.util.*;
  * to parent and child
  */
 public class Org {
-    private Organization orgData;
+    private OrgAttributes orgData;
     Org parent;
     private List<Org> children;
     int orgBytes = 0;
@@ -20,7 +17,7 @@ public class Org {
     int descendentsNumUsers = 0;
 
     // Construct an Org based on parameters read from input file
-    public Org(Organization data) {
+    public Org(OrgAttributes data) {
         orgData = data;
         children = new ArrayList<>();
     }
@@ -52,7 +49,7 @@ public class Org {
         children.add(node);
     }
 
-    public void addUser(User user) {
+    public void addUser(UserAttributes user) {
         orgData.userList.add(user);
     }
 
@@ -60,7 +57,7 @@ public class Org {
         return orgData != null;
     }
 
-    public Organization getOrgData() {
+    public OrgAttributes getOrgData() {
         return orgData;
     }
     List<Org> getChildOrgs() {

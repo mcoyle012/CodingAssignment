@@ -17,8 +17,8 @@ public class MainTest {
 
         OrgCollection orgChart;
         List<Org> orgList;
-        HashMap<Integer, Organization> orgs;
-        HashMap<Integer, User> users;
+        HashMap<Integer, OrgAttributes> orgs;
+        HashMap<Integer, UserAttributes> users;
         PrintWriter pw;
 
         // use default input file

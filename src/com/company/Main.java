@@ -17,14 +17,14 @@ class Main {
     public static String userFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\users.txt";
     public static String outFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\output.txt";
 
-    public static HashMap<Integer, Organization> ReadOrgData(String filename) {
-        HashMap<Integer, Organization> orgs = null;
+    public static HashMap<Integer, OrgAttributes> ReadOrgData(String filename) {
+        HashMap<Integer, OrgAttributes> orgs = null;
         int lineNum = 1;
 
         try (Scanner s = new Scanner(new BufferedReader(new FileReader(filename))).useDelimiter(delimiter)) {
-            orgs = new HashMap<Integer, Organization>();
+            orgs = new HashMap<Integer, OrgAttributes>();
             while (s.hasNextLine()) {
-                Organization org = new Organization();
+                OrgAttributes org = new OrgAttributes();
                 try {
                     org.Id = s.nextInt();
                 } catch (InputMismatchException e) {
@@ -50,7 +50,7 @@ class Main {
                     continue;
                 }
                 if (orgs.put(org.Id, org) != null) {
-                    System.out.println(String.format("Organization %d already exists, ignoring duplicate definition on line %d in %s", org.Id, lineNum, filename));
+                    System.out.println(String.format("OrgAttributes %d already exists, ignoring duplicate definition on line %d in %s", org.Id, lineNum, filename));
                 }
                 lineNum++;
             }
@@ -61,15 +61,15 @@ class Main {
     }
 
 
-    public static HashMap<Integer, User> ReadUserData(String filename) {
-        HashMap<Integer, User> users = null;
+    public static HashMap<Integer, UserAttributes> ReadUserData(String filename) {
+        HashMap<Integer, UserAttributes> users = null;
 
         try (Scanner s = new Scanner(new BufferedReader(new FileReader(filename))).useDelimiter(delimiter)) {
-            users = new HashMap<Integer, User>();
+            users = new HashMap<Integer, UserAttributes>();
             int lineNum = 1;
 
             while (s.hasNextLine()) {
-                User user = new User();
+                UserAttributes user = new UserAttributes();
                 try {
                     user.Id = s.nextInt();
                 } catch (InputMismatchException e) {
@@ -105,7 +105,7 @@ class Main {
                     continue;
                 }
                 if (users.put(user.Id, user) != null) {
-                    System.out.println(String.format("User %d already exists, ignoring duplicate definition on line %d in %s", user.Id, lineNum, filename));
+                    System.out.println(String.format("UserAttributes %d already exists, ignoring duplicate definition on line %d in %s", user.Id, lineNum, filename));
                 }
                 lineNum++;
                 s.nextLine();
@@ -143,8 +143,8 @@ class Main {
 
             OrgCollection orgChart;
             List<Org> orgList;
-            HashMap<Integer, Organization> orgs;
-            HashMap<Integer, User> users;
+            HashMap<Integer, OrgAttributes> orgs;
+            HashMap<Integer, UserAttributes> users;
 
             // read org file data
             orgs = ReadOrgData(orgFilename);

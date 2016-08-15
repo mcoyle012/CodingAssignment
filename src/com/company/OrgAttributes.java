@@ -8,12 +8,12 @@ import java.util.*;
  * users assigned to this organization that resulted from processing the
  * user input file.
  */
-class Organization {
+class OrgAttributes {
     int Id;
     int parentId;
     String name;
     boolean hasParent;
-    List<User> userList = new ArrayList<User>();
+    List<UserAttributes> userList = new ArrayList<UserAttributes>();
 
     public int getId() {
         return Id;
