@@ -9,15 +9,68 @@ import java.util.*;
  */
 public class OrgCollection {
 
-    public Org root;
-    public HashMap<Integer, Org> orgHashMap = new HashMap<Integer, Org>();
+    private Org root;
 
-    // Construct a tree
-    public OrgCollection(Organization data) {
-        root = new Org(data);
-        // root node has no org data, only its children do
-        if (data != null)
-            orgHashMap.put(data.Id, root);
+    public Org getRoot() {
+        return root;
+    }
+
+    public HashMap<Integer, Org> orgHashMap = new HashMap<Integer, Org>();  // i created this on read; now is a duplicate
+
+    /*
+     Given an unordered list of orgs and users, construct an OrgCollection that represents
+     that org.
+     TODO: Should be refactored as a constructor method on OrgCollection.
+     */
+    public OrgCollection(HashMap<Integer, Organization> orgs, HashMap<Integer, User> users) {
+
+        // Pure brute force; more performant ways exist.  Call this the MVP edition.
+        // Revisit this once all the functional requirements are met and some unit
+        // tests are in place, then refactor for performance.
+        while (orgs.size() != 0) {
+            boolean workDone = false;
+
+            // Iterating over values only
+            for (Organization org : orgs.values()) {
+                // if parentId is valid
+                if (org.hasParent) {
+                    Org parent = NodeExists(org.parentId);
+                    if (parent != null) {
+                        // add to tree as child of parent
+                        AddChild(parent, org);
+                        // remove from HashMap
+                        orgs.remove(org.Id);
+                        workDone = true;
+                    }
+                } else {
+                    workDone = true;
+                    // has no parent, is child of dummy root node
+                    AddChild(root, org);
+                    // remove from HashSet
+                    orgs.remove(org.Id);
+                }
+            }
+
+            // if I added no nodes to the tree, then the input isn't a tree
+            // there should be at least one node to add to the tree in every pass
+            // unless there are orphaned nodes, which will never get added
+            if ((orgs.size() != 0) && !workDone) {
+                System.out.println("Input org tree is badly formed.  Ignoring orphaned orgs in input file.");
+                break;
+            }
+
+        }
+
+        // Accumulate user data to corresponding org
+        for (User user : users.values()) {
+            Org parent = NodeExists(user.Org);
+            if (parent != null) {
+                parent.addUser(user);
+                parent.orgBytes += user.numBytes;
+                parent.orgFiles += user.numFiles;
+            }
+        }
+        setOrgTreeStats(root);
     }
 
     // find a node in the tree by orgId
