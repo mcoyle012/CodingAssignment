@@ -1,5 +1,7 @@
 package com.company;
 
+import com.sun.deploy.security.MozillaJSSDSASignature;
+
 import java.io.*;
 import java.util.*;
 
@@ -11,60 +13,50 @@ import java.util.*;
  */
 class Main {
 
-    private static final String delimiter = "\\s*,\\s*";
-
     public static String orgFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\orgs.txt";
     public static String userFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\users.txt";
     public static String outFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\output.txt";
+    private static final String delimiter = "\\s*,\\s*";
+
 
     public static HashMap<Integer, OrgAttributes> ReadOrgData(String filename) {
         HashMap<Integer, OrgAttributes> orgs = null;
         int lineNum = 1;
 
-        try (Scanner s = new Scanner(new BufferedReader(new FileReader(filename))).useDelimiter(delimiter)) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             orgs = new HashMap<Integer, OrgAttributes>();
-            while (s.hasNextLine()) {
-                OrgAttributes org = new OrgAttributes();
-                try {
-                    org.Id = s.nextInt();
-                } catch (InputMismatchException e) {
-                    System.out.println(String.format("Ignoring line %d in %s due to parse error in first field", lineNum, filename));
-                    s.nextLine();
-                    lineNum++;
-                    continue;
-                }
-                try {
-                    org.parentId = s.nextInt();
-                    org.hasParent = true;
-                } catch (InputMismatchException e) {
-                    org.hasParent = false;
-                    s.next();
-                }
-                try {
-                    assert (s.hasNext());
-                    org.name = s.next();
-                } catch (InputMismatchException e) {
-                    System.out.println(String.format("Ignoring line %d in %s due to parse error in third field", lineNum, filename));
-                    s.nextLine();
-                    lineNum++;
-                    continue;
-                }
-                if (orgs.put(org.Id, org) != null) {
-                    System.out.println(String.format("OrgAttributes %d already exists, ignoring duplicate definition on line %d in %s", org.Id, lineNum, filename));
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] words = line.split(delimiter);
+                if (words.length == 3) {
+                    OrgAttributes org = new OrgAttributes();
+                    org.Id = Integer.parseInt(words[0]);
+                    try {
+                        org.parentId = Integer.parseInt(words[1]);
+                        org.hasParent = true;
+                    } catch (Exception e) {
+                        org.hasParent = false;
+                    }
+                    org.name = words[2];
+                    if (orgs.put(org.Id, org) != null) {
+                        System.out.println(String.format("Duplicate definition for org %d found at line %d in %s, using most recent definition", org.Id, lineNum, filename));
+                    }
+                } else {
+                    System.out.println(String.format("Skipping malformed line line %d in %s due to wrong number of fields", lineNum, filename));
                 }
                 lineNum++;
             }
-        } catch (FileNotFoundException fnf) {
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
-            return orgs;
+            return null;
         }
     }
-
 
     public static HashMap<Integer, UserAttributes> ReadUserData(String filename) {
         HashMap<Integer, UserAttributes> users = null;
 
-        try (Scanner s = new Scanner(new BufferedReader(new FileReader(filename))).useDelimiter(delimiter)) {
+        try (Scanner s = new Scanner(new BufferedReader(new FileReader(filename)))) {
             users = new HashMap<Integer, UserAttributes>();
             int lineNum = 1;
 
