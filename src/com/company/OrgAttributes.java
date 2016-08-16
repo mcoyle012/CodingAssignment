@@ -13,7 +13,7 @@ class OrgAttributes {
     int parentId;
     String name;
     boolean hasParent;
-    List<UserAttributes> userList = new ArrayList<UserAttributes>();
+    final List<UserAttributes> userList = new ArrayList<>();
 
     public int getId() {
         return Id;

@@ -15,7 +15,7 @@ class OrgCollection {
         return root;
     }
 
-    private HashMap<Integer, Org> orgHashMap = new HashMap<Integer, Org>();  // i created this on read; now is a duplicate
+    private final HashMap<Integer, Org> orgHashMap = new HashMap<>();  // i created this on read; now is a duplicate
 
     /*
      Given an unordered list of orgs and users, construct an OrgCollection that represents
@@ -104,8 +104,7 @@ class OrgCollection {
         }
 
 
-        for (Iterator<Org> children = node.getChildOrgs().iterator(); children.hasNext(); ) {
-            Org child = children.next();
+        for (Org child : node.getChildOrgs()) {
             FlattenToAscii(child, prefix, out);
         }
     }
@@ -114,7 +113,7 @@ class OrgCollection {
         ArrayList<Org> orgList = null;
         Org org = NodeExists(orgId);
         if (org != null) {
-            orgList = new ArrayList<Org>();
+            orgList = new ArrayList<>();
             return FlattenToArray(org, orgList, inclusive);
         }
         return orgList;
@@ -124,11 +123,9 @@ class OrgCollection {
        Do this once for the whole tree
      */
     private void setOrgTreeStats(Org node) {
-        Iterator<Org> children = node.getChildOrgs().iterator();
 
         // will terminate when we hit leaf nodes
-        while (children.hasNext()) {
-            Org child = children.next();
+        for (Org child : node.getChildOrgs()) {
             setOrgTreeStats(child);
         }
         if (node.parent != null && node != null) {
@@ -143,8 +140,7 @@ class OrgCollection {
         if (node != root && inclusive) {
             array.add(node);
         }
-        for (Iterator<Org> children = node.getChildOrgs().iterator(); children.hasNext(); ) {
-            Org child = children.next();
+        for (Org child : node.getChildOrgs()) {
             FlattenToArray(child, array, true);
         }
         return array;

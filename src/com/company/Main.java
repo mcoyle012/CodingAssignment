@@ -1,8 +1,5 @@
 package com.company;
 
-import com.sun.deploy.nativesandbox.IntegrityProcess;
-import com.sun.deploy.security.MozillaJSSDSASignature;
-
 import java.io.*;
 import java.util.*;
 
@@ -25,7 +22,7 @@ class Main {
         int lineNum = 1;
 
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
-            orgs = new HashMap<Integer, OrgAttributes>();
+            orgs = new HashMap<>();
             String line;
             while ((line = br.readLine()) != null) {
                 String[] words = line.split(delimiter);
@@ -58,7 +55,7 @@ class Main {
         int lineNum = 1;
 
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
-            users = new HashMap<Integer, UserAttributes>();
+            users = new HashMap<>();
             String line;
             while ((line = br.readLine()) != null) {
                 String[] words = line.split(delimiter);
