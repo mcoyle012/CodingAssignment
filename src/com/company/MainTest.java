@@ -27,7 +27,7 @@ public class MainTest {
         Assert.assertEquals(5, users.size());
         orgs = Main.ReadOrgData(Main.orgFilename);
         Assert.assertNotNull(orgs);
-        Assert.assertEquals(5, orgs.size());
+        Assert.assertEquals(0, orgs.size());
         orgChart = new OrgCollection(orgs, users);
         // Assert.assertEquals(5, orgChart.orgHashMap.size());
         // dump org tree to file with usage stats

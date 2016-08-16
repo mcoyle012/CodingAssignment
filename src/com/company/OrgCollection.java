@@ -124,14 +124,16 @@ class OrgCollection {
      */
     private void setOrgTreeStats(Org node) {
 
-        // will terminate when we hit leaf nodes
-        for (Org child : node.getChildOrgs()) {
-            setOrgTreeStats(child);
-        }
-        if (node.parent != null) {
-            node.parent.descendentsNumBytes += node.orgBytes;
-            node.parent.descendentsNumFiles += node.orgFiles;
-            node.parent.descendentsNumUsers += node.getChildOrgs().size();
+        if (node != null) {
+            // will terminate when we hit leaf nodes
+            for (Org child : node.getChildOrgs()) {
+                setOrgTreeStats(child);
+            }
+            if (node.parent != null) {
+                node.parent.descendentsNumBytes += node.orgBytes;
+                node.parent.descendentsNumFiles += node.orgFiles;
+                node.parent.descendentsNumUsers += node.getChildOrgs().size();
+            }
         }
     }
 
