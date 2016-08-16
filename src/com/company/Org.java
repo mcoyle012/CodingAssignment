@@ -7,9 +7,9 @@ import java.util.*;
  * to parent and child
  */
 public class Org {
-    private OrgAttributes orgData;
+    private final OrgAttributes orgData;
     Org parent;
-    private List<Org> children;
+    private final List<Org> children;
     int orgBytes = 0;
     int orgFiles = 0;
     int descendentsNumBytes = 0;

@@ -6,10 +6,10 @@ package com.company;
  */
 class UserAttributes {
 
-    private int id;
-    private int org;
-    private int numFiles;
-    private int numBytes;
+    private final int id;
+    private final int org;
+    private final int numFiles;
+    private final int numBytes;
 
     public UserAttributes(int uid, int pOrg, int files, int bytes) {
         id = uid;

@@ -9,10 +9,10 @@ import java.util.*;
  * user input file.
  */
 class OrgAttributes {
-    private int id;
-    private int parentId;
-    private String name;
-    private boolean hasParent;
+    private final int id;
+    private final int parentId;
+    private final String name;
+    private final boolean hasParent;
     private final List<UserAttributes> userList = new ArrayList<>();
 
     public OrgAttributes(int oId, int pId, String assignedName, boolean parent) {

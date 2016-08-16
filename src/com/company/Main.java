@@ -11,9 +11,8 @@ import java.util.*;
  */
 class Main {
 
-    public static String orgFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\orgs.txt";
-    public static String userFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\users.txt";
-    private static String outFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\output.txt";
+    public static final String orgFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\orgs.txt";
+    public static final String userFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\users.txt";
     private static final String delimiter = "\\s*,\\s*";
 
 
@@ -92,7 +91,6 @@ class Main {
         try {
 
             OrgCollection orgChart;
-            List<Org> orgList;
             HashMap<Integer, OrgAttributes> orgs;
             HashMap<Integer, UserAttributes> users;
 
@@ -104,6 +102,7 @@ class Main {
             orgChart = new OrgCollection(orgs, users);
 
             // dump org tree to file with usage stats
+            String outFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\output.txt";
             PrintWriter pw = new PrintWriter(new FileWriter(outFilename));
             orgChart.FlattenToAscii(orgChart.getRoot(), "", pw);
             pw.close();
