@@ -33,8 +33,8 @@ class OrgCollection {
             for (Iterator<OrgAttributes> orgIter = orgs.values().iterator(); orgIter.hasNext(); ) {
                 // if parentId is valid
                 OrgAttributes org = orgIter.next();
-                if (org.hasParent) {
-                    Org parent = NodeExists(org.parentId);
+                if (org.getHasParent()) {
+                    Org parent = NodeExists(org.getParentId());
                     if (parent != null) {
                         // add to tree as child of parent
                         AddChild(parent, org);
@@ -63,11 +63,11 @@ class OrgCollection {
 
         // Accumulate user data to corresponding org
         for (UserAttributes user : users.values()) {
-            Org parent = NodeExists(user.Org);
+            Org parent = NodeExists(user.getOrg());
             if (parent != null) {
                 parent.addUser(user);
-                parent.orgBytes += user.numBytes;
-                parent.orgFiles += user.numFiles;
+                parent.orgBytes += user.getNumBytes();
+                parent.orgFiles += user.getNumFiles();
             }
         }
         setOrgTreeStats(root);
@@ -81,7 +81,7 @@ class OrgCollection {
     // add child node
     private void AddChild(Org parent, OrgAttributes data) {
         Org child = new Org(data);
-        if (data.hasParent) {
+        if (data.getHasParent()) {
             parent.addChild(child);
             child.parent = parent;
         } else {
@@ -91,7 +91,7 @@ class OrgCollection {
             root.addChild(child);
             child.parent = root;
         }
-        orgHashMap.put(data.Id, child);
+        orgHashMap.put(data.getId(), child);
     }
 
     public void FlattenToAscii(Org node, String prefix, PrintWriter out) {
@@ -99,7 +99,7 @@ class OrgCollection {
         // which are real orgs
         if (node.hasOrgData()) {
             OrgAttributes orgData = node.getOrgData();
-            out.println(String.format("%s +- %d, %d, %d, %d", prefix, orgData.Id, node.getTotalNumUsers(), node.getTotalNumFiles(), node.getTotalNumBytes()));
+            out.println(String.format("%s +- %d, %d, %d, %d", prefix, orgData.getId(), node.getTotalNumUsers(), node.getTotalNumFiles(), node.getTotalNumBytes()));
             prefix += "  ";
         }
 

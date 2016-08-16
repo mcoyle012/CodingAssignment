@@ -50,7 +50,7 @@ public class Org {
     }
 
     public void addUser(UserAttributes user) {
-        orgData.userList.add(user);
+        orgData.getUserList().add(user);
     }
 
     public boolean hasOrgData() {

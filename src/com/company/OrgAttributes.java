@@ -9,14 +9,21 @@ import java.util.*;
  * user input file.
  */
 class OrgAttributes {
-    int Id;
-    int parentId;
-    String name;
-    boolean hasParent;
-    final List<UserAttributes> userList = new ArrayList<>();
+    private int id;
+    private int parentId;
+    private String name;
+    private boolean hasParent;
+    private final List<UserAttributes> userList = new ArrayList<>();
+
+    public OrgAttributes(int oId, int pId, String assignedName, boolean parent) {
+        id = oId;
+        parentId = pId;
+        name = assignedName;
+        hasParent = parent;
+    }
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public int getParentId() {
@@ -29,6 +36,10 @@ class OrgAttributes {
 
     public boolean getHasParent() {
         return hasParent;
+    }
+
+    public List<UserAttributes> getUserList() {
+        return userList;
     }
 
 }

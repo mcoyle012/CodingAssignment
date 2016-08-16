@@ -27,17 +27,19 @@ class Main {
             while ((line = br.readLine()) != null) {
                 String[] words = line.split(delimiter);
                 if (words.length == 3) {
-                    OrgAttributes org = new OrgAttributes();
-                    org.Id = Integer.parseInt(words[0]);
+                    int orgId, parentId;
+                    boolean hasParent;
+                    orgId = Integer.parseInt(words[0]);
                     try {
-                        org.parentId = Integer.parseInt(words[1]);
-                        org.hasParent = true;
+                        parentId = Integer.parseInt(words[1]);
+                        hasParent = true;
                     } catch (Exception e) {
-                        org.hasParent = false;
+                        hasParent = false;
+                        parentId = -1;
                     }
-                    org.name = words[2];
-                    if (orgs.put(org.Id, org) != null) {
-                        System.out.println(String.format("Duplicate definition for org %d found at line %d in %s, using most recent definition", org.Id, lineNum, filename));
+                    OrgAttributes org = new OrgAttributes(orgId, parentId, words[2], hasParent);
+                    if (orgs.put(org.getId(), org) != null) {
+                        System.out.println(String.format("Duplicate definition for org %d found at line %d in %s, using most recent definition", org.getId(), lineNum, filename));
                     }
                 } else {
                     System.out.println(String.format("Skipping malformed line line %d in %s due to wrong number of fields", lineNum, filename));
@@ -60,13 +62,12 @@ class Main {
             while ((line = br.readLine()) != null) {
                 String[] words = line.split(delimiter);
                 if (words.length == 4) {
-                    UserAttributes user = new UserAttributes();
-                    user.Id = Integer.parseInt(words[0]);
-                    user.Org = Integer.parseInt(words[1]);
-                    user.numFiles = Integer.parseInt(words[2]);
-                    user.numBytes = Integer.parseInt(words[3]);
-                    if (users.put(user.Id, user) != null) {
-                        System.out.println(String.format("Duplicate definition for org %d found at line %d in %s, using most recent definition", user.Id, lineNum, filename));
+                    UserAttributes user = new UserAttributes(Integer.parseInt(words[0]),
+                            Integer.parseInt(words[1]),
+                            Integer.parseInt(words[2]),
+                            Integer.parseInt(words[3]));
+                    if (users.put(user.getId(), user) != null) {
+                        System.out.println(String.format("Duplicate definition for org %d found at line %d in %s, using most recent definition", user.getId(), lineNum, filename));
                     }
                 } else {
                     System.out.println(String.format("Skipping malformed line line %d in %s due to wrong number of fields", lineNum, filename));
@@ -89,26 +90,6 @@ class Main {
     public static void main(String[] args) {
 
         try {
-            int argc = 0;
-
-            // use user supplied filenames, if present  t
-            for (String s : args) {
-                if (argc++ == 0) {
-                    orgFilename = s;
-                } else if (argc++ == 1) {
-                    userFilename = s;
-                } else if (argc++ == 2) {
-                    outFilename = s;
-                    break;
-                }
-            }
-            if (args.length != 0 && args.length != 3) {
-                System.out.println(String.format("Expected three command line arguments (orgFile, userFile, outputFile), but got %d arguments.  Reverting to default filenames.", argc));
-            } else if (args.length == 3) {
-                orgFilename = args[0];
-                userFilename = args[1];
-                outFilename = args[2];
-            }
 
             OrgCollection orgChart;
             List<Org> orgList;
