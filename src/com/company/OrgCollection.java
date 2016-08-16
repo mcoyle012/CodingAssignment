@@ -34,10 +34,10 @@ class OrgCollection {
                 // if parentId is valid
                 OrgAttributes org = orgIter.next();
                 if (org.getHasParent()) {
-                    Org parent = NodeExists(org.getParentId());
+                    Org parent = nodeExists(org.getParentId());
                     if (parent != null) {
                         // add to tree as child of parent
-                        AddChild(parent, org);
+                        addChild(parent, org);
                         // remove from HashMap
                         orgIter.remove();
                         workDone = true;
@@ -45,7 +45,7 @@ class OrgCollection {
                 } else {
                     workDone = true;
                     // has no parent, is child of dummy root node
-                    AddChild(root, org);
+                    addChild(root, org);
                     // remove from HashSet
                     orgIter.remove();
                 }
@@ -63,7 +63,7 @@ class OrgCollection {
 
         // Accumulate user data to corresponding org
         for (UserAttributes user : users.values()) {
-            Org parent = NodeExists(user.getOrg());
+            Org parent = nodeExists(user.getOrg());
             if (parent != null) {
                 parent.addUser(user);
                 parent.orgBytes += user.getNumBytes();
@@ -74,12 +74,12 @@ class OrgCollection {
     }
 
     // find a node in the tree by orgId
-    private Org NodeExists(int orgId) {
+    private Org nodeExists(int orgId) {
         return orgHashMap.get(orgId);
     }
 
     // add child node
-    private void AddChild(Org parent, OrgAttributes data) {
+    private void addChild(Org parent, OrgAttributes data) {
         Org child = new Org(data);
         if (data.getHasParent()) {
             parent.addChild(child);
@@ -94,7 +94,7 @@ class OrgCollection {
         orgHashMap.put(data.getId(), child);
     }
 
-    public void FlattenToAscii(Org node, String prefix, PrintWriter out) {
+    public void flattenToAscii(Org node, String prefix, PrintWriter out) {
         if (node != null) {
             // root node is a placeholder (non-org) entity.  Only dump its children
             // which are real orgs
@@ -105,17 +105,17 @@ class OrgCollection {
             }
 
             for (Org child : node.getChildOrgs()) {
-                FlattenToAscii(child, prefix, out);
+                flattenToAscii(child, prefix, out);
             }
         }
     }
 
     public List<Org> getOrgTree(int orgId, boolean inclusive) {
         ArrayList<Org> orgList = null;
-        Org org = NodeExists(orgId);
+        Org org = nodeExists(orgId);
         if (org != null) {
             orgList = new ArrayList<>();
-            return FlattenToArray(org, orgList, inclusive);
+            return flattenToArray(org, orgList, inclusive);
         }
         return orgList;
     }
@@ -139,12 +139,12 @@ class OrgCollection {
     }
 
 
-    private List<Org> FlattenToArray(Org node, List<Org> array, boolean inclusive) {
+    private List<Org> flattenToArray(Org node, List<Org> array, boolean inclusive) {
         if (node != root && inclusive) {
             array.add(node);
         }
         for (Org child : node.getChildOrgs()) {
-            FlattenToArray(child, array, true);
+            flattenToArray(child, array, true);
         }
         return array;
     }

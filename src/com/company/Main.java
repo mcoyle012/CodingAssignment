@@ -16,7 +16,7 @@ class Main {
     private static final String delimiter = "\\s*,\\s*";
 
 
-    public static HashMap<Integer, OrgAttributes> ReadOrgData(String filename) {
+    public static HashMap<Integer, OrgAttributes> readOrgData(String filename) {
         HashMap<Integer, OrgAttributes> orgs = null;
         int lineNum = 1;
 
@@ -51,7 +51,7 @@ class Main {
         return orgs;
     }
 
-    public static HashMap<Integer, UserAttributes> ReadUserData(String filename) {
+    public static HashMap<Integer, UserAttributes> readUserData(String filename) {
         HashMap<Integer, UserAttributes> users = null;
         int lineNum = 1;
 
@@ -97,16 +97,16 @@ class Main {
             HashMap<Integer, UserAttributes> users;
 
             // read org file data
-            orgs = ReadOrgData(orgFilename);
+            orgs = readOrgData(orgFilename);
             // read user file data
-            users = ReadUserData(userFilename);
+            users = readUserData(userFilename);
             // consturct tree of orgs and add users to each org
             orgChart = new OrgCollection(orgs, users);
 
             // dump org tree to file with usage stats
             String outFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\output.txt";
             PrintWriter pw = new PrintWriter(new FileWriter(outFilename));
-            orgChart.FlattenToAscii(orgChart.getRoot(), "", pw);
+            orgChart.flattenToAscii(orgChart.getRoot(), "", pw);
             pw.close();
 
         } catch (Exception e) {
