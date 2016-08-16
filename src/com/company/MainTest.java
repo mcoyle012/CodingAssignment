@@ -14,7 +14,7 @@ import java.util.List;
 public class MainTest {
 
     @org.junit.Test
-    public static void buildTree() throws Exception {
+    public void buildTree() throws Exception {
 
         OrgCollection orgChart;
         HashMap<Integer, OrgAttributes> orgs;
