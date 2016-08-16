@@ -17,7 +17,6 @@ public class MainTest {
     public static void buildTree() throws Exception {
 
         OrgCollection orgChart;
-        List<Org> orgList;
         HashMap<Integer, OrgAttributes> orgs;
         HashMap<Integer, UserAttributes> users;
         PrintWriter pw;

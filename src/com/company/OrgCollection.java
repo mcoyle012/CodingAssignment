@@ -128,7 +128,7 @@ class OrgCollection {
         for (Org child : node.getChildOrgs()) {
             setOrgTreeStats(child);
         }
-        if (node.parent != null && node != null) {
+        if (node.parent != null) {
             node.parent.descendentsNumBytes += node.orgBytes;
             node.parent.descendentsNumFiles += node.orgFiles;
             node.parent.descendentsNumUsers += node.getChildOrgs().size();
