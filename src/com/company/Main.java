@@ -1,5 +1,6 @@
 package com.company;
 
+import com.sun.deploy.nativesandbox.IntegrityProcess;
 import com.sun.deploy.security.MozillaJSSDSASignature;
 
 import java.io.*;
@@ -49,63 +50,40 @@ class Main {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            return null;
+            return orgs;
         }
     }
 
     public static HashMap<Integer, UserAttributes> ReadUserData(String filename) {
         HashMap<Integer, UserAttributes> users = null;
+        int lineNum = 1;
 
-        try (Scanner s = new Scanner(new BufferedReader(new FileReader(filename)))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             users = new HashMap<Integer, UserAttributes>();
-            int lineNum = 1;
-
-            while (s.hasNextLine()) {
-                UserAttributes user = new UserAttributes();
-                try {
-                    user.Id = s.nextInt();
-                } catch (InputMismatchException e) {
-                    System.out.println(String.format("Ignoring line %d in %s due to parse error in first field", lineNum, filename));
-                    s.nextLine();
-                    lineNum++;
-                    continue;
-                }
-                try {
-                    user.Org = s.nextInt();
-                } catch (InputMismatchException e) {
-                    System.out.println(String.format("Ignoring line %d in %s due to parse error in first field", lineNum, filename));
-                    s.nextLine();
-                    lineNum++;
-                    continue;
-                }
-                try {
-                    user.numFiles = s.nextInt();
-                } catch (InputMismatchException e) {
-                    System.out.println(String.format("Ignoring line %d in %s due to parse error in first field", lineNum, filename));
-                    s.nextLine();
-                    lineNum++;
-                    continue;
-                }
-
-                try {
-                    user.numBytes = s.nextInt();
-
-                } catch (InputMismatchException e) {
-                    System.out.println(String.format("Ignoring line %d in %s due to parse error in first field", lineNum, filename));
-                    s.nextLine();
-                    lineNum++;
-                    continue;
-                }
-                if (users.put(user.Id, user) != null) {
-                    System.out.println(String.format("UserAttributes %d already exists, ignoring duplicate definition on line %d in %s", user.Id, lineNum, filename));
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] words = line.split(delimiter);
+                if (words.length == 4) {
+                    UserAttributes user = new UserAttributes();
+                    user.Id = Integer.parseInt(words[0]);
+                    user.Org = Integer.parseInt(words[1]);
+                    user.numFiles = Integer.parseInt(words[2]);
+                    user.numBytes = Integer.parseInt(words[3]);
+                    if (users.put(user.Id, user) != null) {
+                        System.out.println(String.format("Duplicate definition for org %d found at line %d in %s, using most recent definition", user.Id, lineNum, filename));
+                    }
+                } else {
+                    System.out.println(String.format("Skipping malformed line line %d in %s due to wrong number of fields", lineNum, filename));
                 }
                 lineNum++;
-                s.nextLine();
             }
-        } catch (FileNotFoundException fnf) {
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             return users;
         }
+
+
     }
 
 
