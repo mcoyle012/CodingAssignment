@@ -36,7 +36,7 @@ class Main {
                         hasParent = false;
                         parentId = -1;
                     }
-                    // this assumes numeric org name is treated as valid--any string is accepted as a name.
+                    // this assumes numeric org name (words[2]) is treated as valid--any string is accepted as a name.
                     OrgAttributes org = new OrgAttributes(orgId, parentId, words[2], hasParent);
                     if (orgs.put(org.getId(), org) != null) {
                         System.out.println(String.format("Duplicate definition for org %d found at line %d in %s, using most recent definition", org.getId(), lineNum, filename));
