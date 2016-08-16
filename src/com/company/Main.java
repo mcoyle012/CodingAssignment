@@ -11,7 +11,7 @@ import java.util.*;
  */
 class Main {
 
-    public static final String orgFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\orgs.txt";
+    public static final String orgFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\test1orgs.txt";
     public static final String userFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\users.txt";
     private static final String delimiter = "\\s*,\\s*";
 
