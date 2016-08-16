@@ -16,7 +16,7 @@ class Main {
 
     public static String orgFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\orgs.txt";
     public static String userFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\users.txt";
-    public static String outFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\output.txt";
+    private static String outFilename = "C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\output.txt";
     private static final String delimiter = "\\s*,\\s*";
 
 
@@ -49,9 +49,8 @@ class Main {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            return orgs;
         }
+        return orgs;
     }
 
     public static HashMap<Integer, UserAttributes> ReadUserData(String filename) {
@@ -79,10 +78,9 @@ class Main {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            return users;
         }
 
+        return users;
 
     }
 
@@ -107,8 +105,12 @@ class Main {
                     break;
                 }
             }
-            if (args.length != 0 && argc != 3) {
-                System.out.println(String.format("Expected three command line arguments (orgFile, userFile, outputFile), but got %d.  Reverting to default filenames.", argc));
+            if (args.length != 0 && args.length != 3) {
+                System.out.println(String.format("Expected three command line arguments (orgFile, userFile, outputFile), but got %d arguments.  Reverting to default filenames.", argc));
+            } else if (args.length == 3) {
+                orgFilename = args[0];
+                userFilename = args[1];
+                outFilename = args[2];
             }
 
             OrgCollection orgChart;
@@ -128,8 +130,8 @@ class Main {
             orgChart.FlattenToAscii(orgChart.getRoot(), "", pw);
             pw.close();
 
-        } catch (Exception exc) {
-            System.out.println(String.format("Program aborting due to exception %s", exc.toString()));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

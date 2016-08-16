@@ -7,7 +7,7 @@ import java.util.*;
  * Implements the tree used to represent the org heirarchy
  * read in from the input org hierarchy data file.
  */
-public class OrgCollection {
+class OrgCollection {
 
     private Org root;
 
@@ -15,7 +15,7 @@ public class OrgCollection {
         return root;
     }
 
-    public HashMap<Integer, Org> orgHashMap = new HashMap<Integer, Org>();  // i created this on read; now is a duplicate
+    private HashMap<Integer, Org> orgHashMap = new HashMap<Integer, Org>();  // i created this on read; now is a duplicate
 
     /*
      Given an unordered list of orgs and users, construct an OrgCollection that represents
@@ -30,16 +30,16 @@ public class OrgCollection {
         while (orgs.size() != 0) {
             boolean workDone = false;
 
-            // Iterating over values only
-            for (OrgAttributes org : orgs.values()) {
+            for (Iterator<OrgAttributes> orgIter = orgs.values().iterator(); orgIter.hasNext(); ) {
                 // if parentId is valid
+                OrgAttributes org = orgIter.next();
                 if (org.hasParent) {
                     Org parent = NodeExists(org.parentId);
                     if (parent != null) {
                         // add to tree as child of parent
                         AddChild(parent, org);
                         // remove from HashMap
-                        orgs.remove(org.Id);
+                        orgIter.remove();
                         workDone = true;
                     }
                 } else {
@@ -47,7 +47,7 @@ public class OrgCollection {
                     // has no parent, is child of dummy root node
                     AddChild(root, org);
                     // remove from HashSet
-                    orgs.remove(org.Id);
+                    orgIter.remove();
                 }
             }
 
@@ -74,15 +74,23 @@ public class OrgCollection {
     }
 
     // find a node in the tree by orgId
-    public Org NodeExists(int orgId) {
+    private Org NodeExists(int orgId) {
         return orgHashMap.get(orgId);
     }
 
     // add child node
-    public void AddChild(Org parent, OrgAttributes data) {
+    private void AddChild(Org parent, OrgAttributes data) {
         Org child = new Org(data);
-        parent.addChild(child);
-        child.parent = parent;
+        if (data.hasParent) {
+            parent.addChild(child);
+            child.parent = parent;
+        } else {
+            if (root == null) {
+                root = new Org(null);
+            }
+            root.addChild(child);
+            child.parent = root;
+        }
         orgHashMap.put(data.Id, child);
     }
 
@@ -115,7 +123,7 @@ public class OrgCollection {
     /*
        Do this once for the whole tree
      */
-    public void setOrgTreeStats(Org node) {
+    private void setOrgTreeStats(Org node) {
         Iterator<Org> children = node.getChildOrgs().iterator();
 
         // will terminate when we hit leaf nodes
