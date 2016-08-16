@@ -37,7 +37,7 @@ public class MainTest {
 
 
         // input file with orphaned orgs and same user file as default
-        users = Main.ReadUserData("C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\users.txt");
+        users = Main.ReadUserData("C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\test1users.txt");
         Assert.assertNotNull(users);
         Assert.assertEquals(5, users.size());
         orgs = Main.ReadOrgData("C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\test2orgs.txt");
@@ -55,7 +55,7 @@ public class MainTest {
         users = Main.ReadUserData("C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\test3users.txt");
         Assert.assertNotNull(users);
         Assert.assertEquals(30, users.size());
-        orgs = Main.ReadOrgData("C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\moreorgs.txt");
+        orgs = Main.ReadOrgData("C:\\Users\\Mike\\IdeaProjects\\CodingAssignment\\src\\com\\company\\test3orgs.txt");
         Assert.assertNotNull(orgs);
         Assert.assertEquals(20, orgs.size());
         orgChart = new OrgCollection(orgs, users);
