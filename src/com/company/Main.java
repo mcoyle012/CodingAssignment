@@ -61,10 +61,13 @@ class Main {
             while ((line = br.readLine()) != null) {
                 String[] words = line.split(delimiter);
                 if (words.length == 4) {
-                    UserAttributes user = new UserAttributes(Integer.parseInt(words[0]),
-                            Integer.parseInt(words[1]),
-                            Integer.parseInt(words[2]),
-                            Integer.parseInt(words[3]));
+                    int[] attrs = new int[4];
+                    int idx = 0;
+                    for (String s : words) {
+                        attrs[idx] = Integer.parseInt(words[idx]);
+                        idx++;
+                    }
+                    UserAttributes user = new UserAttributes(attrs[0], attrs[1], attrs[2], attrs[3]);
                     if (users.put(user.getId(), user) != null) {
                         System.out.println(String.format("Duplicate definition for org %d found at line %d in %s, using most recent definition", user.getId(), lineNum, filename));
                     }
@@ -80,8 +83,7 @@ class Main {
         return users;
 
     }
-
-
+    
     /*
       Program entry point.  Optional user supplied arguments indicate the
       intput files to process.  arg1 = org, arg2 = user.
