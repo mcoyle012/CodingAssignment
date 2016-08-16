@@ -83,7 +83,7 @@ class Main {
         return users;
 
     }
-    
+
     /*
       Program entry point.  Optional user supplied arguments indicate the
       intput files to process.  arg1 = org, arg2 = user.
