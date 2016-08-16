@@ -95,17 +95,18 @@ class OrgCollection {
     }
 
     public void FlattenToAscii(Org node, String prefix, PrintWriter out) {
-        // root node is a placeholder (non-org) entity.  Only dump its children
-        // which are real orgs
-        if (node.hasOrgData()) {
-            OrgAttributes orgData = node.getOrgData();
-            out.println(String.format("%s +- %d, %d, %d, %d", prefix, orgData.getId(), node.getTotalNumUsers(), node.getTotalNumFiles(), node.getTotalNumBytes()));
-            prefix += "  ";
-        }
+        if (node != null) {
+            // root node is a placeholder (non-org) entity.  Only dump its children
+            // which are real orgs
+            if (node.hasOrgData()) {
+                OrgAttributes orgData = node.getOrgData();
+                out.println(String.format("%s +- %d, %d, %d, %d", prefix, orgData.getId(), node.getTotalNumUsers(), node.getTotalNumFiles(), node.getTotalNumBytes()));
+                prefix += "  ";
+            }
 
-
-        for (Org child : node.getChildOrgs()) {
-            FlattenToAscii(child, prefix, out);
+            for (Org child : node.getChildOrgs()) {
+                FlattenToAscii(child, prefix, out);
+            }
         }
     }
 
